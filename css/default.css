@@ -1,0 +1,75 @@
+@charset "utf-8";
+/* These are the base styles for the various window pane elements */
+
+.window_frame {
+	overflow:hidden !important;	
+}
+
+.pane {
+	
+}
+
+/* <-- Styles for vertical layout -->*/
+
+.vertical_nav .prev_pane, .vertical_nav .next_pane {
+	cursor:pointer;
+	height:10%;
+	width:100%;
+	opacity:.9;
+}
+
+.vertical_nav:hover, .next_pane:hover {
+	opacity:1;
+}
+
+.vertical_nav .next_pane {
+	background:url(../images/arrow_d.png) no-repeat center;
+}
+
+.vertical_nav .prev_pane {
+	background:url(../images/arrow_u.png) no-repeat center !important;
+}
+
+.vertical_nav .pane_content {
+	height:80%;	
+}
+
+.first_pane .pane_content {
+	height:90%;
+}
+
+/* <-- Styles for horizontal layout -->*/
+
+.horizontal_nav .pane {
+	clear:both;	
+}
+
+.horizontal_nav .prev_pane, .horizontal_nav .next_pane {
+	cursor:pointer;
+	height:100%;
+	width:10%;
+	float:left;
+	opacity:.9;
+}
+
+.horizontal_nav:hover, .next_pane:hover {
+	opacity:1;
+}
+
+.horizontal_nav .next_pane {
+	background:url(../images/arrow_r.png) no-repeat center;
+}
+
+.horizontal_nav .prev_pane {
+	background:url(../images/arrow_l.png) no-repeat center !important;
+}
+
+.horizontal_nav .pane_content {
+	float:left;
+	width:80%;
+	height:100%;
+}
+
+.horizontal_nav .first_pane .pane_content {
+	width:90%;
+}

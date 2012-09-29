@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jQuery windowPanes Demo</title>
+<link rel="stylesheet" type="text/css" href="css/default.css" />
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+<script type="text/javascript" src="jquery/jquery-ui-1.8.24.custom.min.js"></script>
+<script type="text/javascript" src="jquery/jquery.mobile.custom.js"></script>
+<script type="text/javascript" src="jquery.windowPanes.js"></script>
+</head>
+
+<body>
+	<div class='window_frame' style='display:none'>
+        <div class='pane' id='pane_1'>
+            <div class="pane_content">
+            	<!-- The content of pane 1 goes in here -->                	
+            </div>
+            <div class='next_pane'></div>
+        </div>        
+        <div class='pane' id='pane_2'>
+            <div class='prev_pane'></div>
+            <div class="pane_content">
+            	<!-- The content of pane 2 goes in here -->                	
+            </div>
+            <div class='next_pane'></div>
+        </div>
+        <div class='pane' id='pane_2'>
+            <div class='prev_pane'></div>
+            <div class="pane_content">
+            	<!-- The content of pane 2 goes in here -->                	
+            </div>
+            <div class='next_pane'></div>
+        </div>        
+	</div>
+</body>
+
+<script type="text/javascript">
+	$(window).load(function(){
+		$(document).windowPanes({
+			transition_speed: 1250,
+			easing:'easeOutQuint',
+			layout: 'vertical'
+		})
+	})
+</script>
+
+</html>
