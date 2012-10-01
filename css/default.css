@@ -5,6 +5,10 @@
 	overflow:hidden !important;	
 }
 
+.pane_wrap {
+	background:#fff;
+}
+
 .pane {
 	
 }
@@ -72,4 +76,30 @@
 
 .horizontal_nav .first_pane .pane_content {
 	width:90%;
+}
+
+/* <-- Ajax Loader --> */
+
+.pane_loader {
+	position:absolute;
+	top:0;
+	bottome:0;
+	width:100%;
+	height:100%;
+	background:url(../images/ajax_loader.gif) no-repeat center;	
+}
+
+/* <-- Styles for navigation -->*/
+
+.window_nav {
+	opacity:.5;
+}
+
+.nav_item {
+	background:#CCC;
+}
+
+.cur_nav {
+	background:#777;
+	
 }

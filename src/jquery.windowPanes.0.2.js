@@ -49,7 +49,9 @@
 		}	
 		
 		//If ajax is true, create ajax element and show it
-		$('body').append("<div class='pane_loader'></div>");
+		if(settings.ajax_loading == true){
+			$('body').append("<div class='pane_loader'></div>");
+		}
 		
 		//Create additional HTML and apply initial CSS for main page elements
 		var frame_html = $('.window_frame').html();
@@ -105,7 +107,12 @@
 		});
 		
 		//Finished setup, display wrapper and call onFinish
+		if(settings.ajax_loading == true){
+			$('.pane_loader').hide();
+		}		
+		
 		$('.window_frame').show();
+		
 		if(typeof settings.onComplete === 'function'){
 			settings.onComplete.call(this);
 		}
