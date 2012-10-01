@@ -5,7 +5,7 @@
 	$.fn.windowPanes = function(options) { 
 		 
 		var settings = $.extend( {
-			'transition_speed': 500,
+			'transitionSpeed': 500,
 			'easing':'',
 			'layout': 'vertical',
 			'min_height': 480,
@@ -17,7 +17,8 @@
 			'lastPane':'default',
 			'ajaxLoading':true,
 			'slideSuppression':true,
-			'navSize':32
+			'navSize':32,
+			'hideContent':true
 		}, options);
 		
 		//Set vars
@@ -205,13 +206,13 @@
 				var position = $('#nav_'+cur_pane).position()
 				$('.cur_nav').animate({
 					top:position.top+'px'
-				},settings.transition_speed, settings.easing)
+				},settings.transitionSpeed, settings.easing)
 			}else if(settings.layout == 'horizontal'){
 				//Get nav_item position associated with cur_pane
 				var position = $('#nav_'+cur_pane).position()
 				$('.cur_nav').animate({
 					left:position.left+'px'
-				},settings.transition_speed, settings.easing)
+				},settings.transitionSpeed, settings.easing)
 			}
 		}
 		
@@ -219,7 +220,7 @@
 		
 		//Hide all but first two panes content. Panes will be shown or hid depending on the user navigating to and from pane. This will offer faster animation scrolling as only two panes worth of content will be animating.
 		$('.pane').each(function(){
-			if($(this).attr('data-pane')>1){
+			if($(this).attr('data-pane')>1 && settings.hideContent == true){
 				$(this).children().hide();	
 			}
 		})
@@ -238,27 +239,27 @@
 			if(anim_running == false || anim_running == ''){
 				if(settings.layout == 'vertical'){
 					anim_running = true;
-					$('.pane_'+cur_pane).children().show()
+					if(settings.hideContent == true){$('.pane_'+cur_pane).children().show()}
 					var offset = (win_h < settings.min_height) ? settings.min_height : win_h;
 					move_nav();
 					$('.pane_wrap').animate({
 						top:'-'+(cur_pane - 1)*offset+'px',			
-					},settings.transition_speed, settings.easing, function(){
+					},settings.transitionSpeed, settings.easing, function(){
 						$('body').animate({
 							scrollTop:0
 						},200)
-						$('.pane_'+temp_pane).children().hide()
+						if(settings.hideContent == true){$('.pane_'+temp_pane).children().hide()}
 						anim_running = false;
 					})
 				}else{
 					anim_running = true;
-					$('.pane_'+cur_pane).children().show()
+					if(settings.hideContent == true){$('.pane_'+cur_pane).children().show()}
 					var offset = (win_w < settings.min_width) ? settings.min_width : win_w;
 					move_nav();
 					$('.pane_wrap').animate({
 						left:'-'+(cur_pane - 1)*offset+'px',			
-					},settings.transition_speed, settings.easing, function(){
-						$('.pane_'+temp_pane).children().hide()
+					},settings.transitionSpeed, settings.easing, function(){
+						if(settings.hideContent == true){$('.pane_'+temp_pane).children().hide()}
 						anim_running = false;
 					})
 				}
@@ -271,21 +272,21 @@
 				if(settings.layout == 'vertical'){
 					if(cur_pane != pane_num){
 						cur_pane++
-						$('.pane_'+cur_pane).children().show()
+						if(settings.hideContent == true){$('.pane_'+cur_pane).children().show()}
 						var offset = (win_h < settings.min_height) ? settings.min_height : win_h;
 						anim_running = true;
 						//Scroll the pane wrapper to the next slide
 						move_nav();
 						$('.pane_wrap').animate({
 							top:'-'+(cur_pane - 1)*offset+'px',			
-						},settings.transition_speed, settings.easing, function(){
+						},settings.transitionSpeed, settings.easing, function(){
 							$('body').animate({
 								scrollTop:0
 							},200)
 							if(typeof onDone === 'function' && onDone()){
 								onDone();
 							}
-							$('.pane_'+(cur_pane-1)).children().hide()
+							if(settings.hideContent == true){$('.pane_'+(cur_pane-1)).children().hide()}
 							anim_running = false;
 						})
 					}else{
@@ -296,18 +297,18 @@
 				}else if(settings.layout == 'horizontal'){
 					if(cur_pane != pane_num){
 						cur_pane++
-						$('.pane_'+cur_pane).children().show()
+						if(settings.hideContent == true){$('.pane_'+cur_pane).children().show()}
 						var offset = (win_w < settings.min_width) ? settings.min_width : win_w;
 						anim_running = true;
 						//Scroll the pane wrapper to the next slide
 						move_nav();
 						$('.pane_wrap').animate({
 							left:'-'+(cur_pane - 1)*offset+'px',			
-						},settings.transition_speed, settings.easing, function(){
+						},settings.transitionSpeed, settings.easing, function(){
 							if(typeof onDone === 'function' && onDone()){
 								onDone();
 							}
-							$('.pane_'+(cur_pane-1)).children().hide()
+							if(settings.hideContent == true){$('.pane_'+(cur_pane-1)).children().hide()}
 							anim_running = false;
 						})
 					}else{
@@ -324,21 +325,21 @@
 				if(settings.layout == 'vertical'){
 					if(cur_pane != 1){
 						cur_pane--
-						$('.pane_'+cur_pane).children().show()
+						if(settings.hideContent == true){$('.pane_'+cur_pane).children().show()}
 						var offset = (win_h < settings.min_height) ? settings.min_height : win_h;
 						anim_running = true;
 						//Scroll the pane wrapper to the prev slide
 						move_nav();
 						$('.pane_wrap').animate({
 							top:'-'+(cur_pane - 1)*offset+'px'
-						},settings.transition_speed, settings.easing, function(){
+						},settings.transitionSpeed, settings.easing, function(){
 							$('body').animate({
 								scrollTop:0
 							},200)
 							if(typeof onDone === 'function' && onDone()){
 								onDone();
 							}
-							$('.pane_'+(cur_pane+1)).children().hide()
+							if(settings.hideContent == true){$('.pane_'+(cur_pane+1)).children().hide()}
 							anim_running = false;
 						})	
 					}else{
@@ -349,18 +350,18 @@
 				}else if(settings.layout == 'horizontal'){
 					if(cur_pane != 1){
 						cur_pane--
-						$('.pane_'+cur_pane).children().show()
+						if(settings.hideContent == true){$('.pane_'+cur_pane).children().show()}
 						var offset = (win_w < settings.min_width) ? settings.min_width : win_w;
 						anim_running = true;
 						//Scroll the pane wrapper to the prev slide
 						move_nav();
 						$('.pane_wrap').animate({
 							left:'-'+(cur_pane - 1)*offset+'px',			
-						},settings.transition_speed, settings.easing, function(){
+						},settings.transitionSpeed, settings.easing, function(){
 							if(typeof onDone === 'function' && onDone()){
 								onDone();
 							}
-							$('.pane_'+(cur_pane+1)).children().hide()
+							if(settings.hideContent == true){$('.pane_'+(cur_pane+1)).children().hide()}
 							anim_running = false;
 						})	
 					}else{
@@ -448,7 +449,7 @@
 						move_nav();
 						$('.pane_wrap').animate({
 							top:'0',			
-						},settings.transition_speed, settings.easing,function(){
+						},settings.transitionSpeed, settings.easing,function(){
 							anim_running = false;
 						})
 					}
@@ -461,7 +462,7 @@
 						move_nav();
 						$('.pane_wrap').animate({
 							left:'0',			
-						},settings.transition_speed, settings.easing,function(){
+						},settings.transitionSpeed, settings.easing,function(){
 							anim_running = false;
 						})
 					}
@@ -517,7 +518,7 @@
 						move_nav();
 						$('.pane_wrap').animate({
 							top:'-'+(cur_pane - 1)*offset+'px',			
-						},settings.transition_speed, settings.easing,function(){
+						},settings.transitionSpeed, settings.easing,function(){
 							anim_running = false;
 						})
 					}
@@ -531,7 +532,7 @@
 						move_nav();
 						$('.pane_wrap').animate({
 							left:'-'+(cur_pane - 1)*offset+'px',			
-						},settings.transition_speed, settings.easing,function(){
+						},settings.transitionSpeed, settings.easing,function(){
 							anim_running = false;
 						})
 					}
