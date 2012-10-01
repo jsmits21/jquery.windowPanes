@@ -21,8 +21,8 @@
 		}, options);
 		
 		//Set vars
-		var win_w = $(window).width();
-		var win_h = $(window).height();
+		var win_w = $('.window_frame').width();
+		var win_h = $('.window_frame').height();
 		var pane_num = 0;
 		var cur_pane = 1;
 		var anim_running = '';
@@ -54,11 +54,11 @@
 			$('.pane_wrap').addClass('horizontal_nav');
 		}
 		
-		$('html, body, .window_frame').css({
+		$('html, body').css({
 			margin:0,
 			padding:0,
-			height: (win_h < settings.min_height) ? settings.min_height+'px' : win_h+'px',
-			width: (win_w < settings.min_width) ? settings.min_width+'px' : win_w+'px',
+			height: '100%',
+			width: '100%',
 			position:'relative'
 		});	
 				
@@ -148,12 +148,12 @@
 					right:'2px',
 				})
 				$('.cur_nav').css({
-					height:item_h,
-					width:'inherit',
+					height:item_h,					
 					position:'absolute',
 					top:0,
 					right:0,
-					'z-index':'100'
+					'z-index':'100',
+					width:'inherit'
 				})
 				$('.nav_item').css({
 					height:item_h,

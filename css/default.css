@@ -2,7 +2,10 @@
 /* These are the base styles for the various window pane elements */
 
 .window_frame {
-	overflow:hidden !important;	
+	overflow:hidden !important;
+	width:1024px;
+	height:100%;
+	margin:0 auto;
 }
 
 .pane_wrap {
@@ -39,7 +42,7 @@
 }
 
 .first_pane .pane_content {
-	height:90%;
+	height:80%;
 }
 
 /* <-- Styles for horizontal layout -->*/
@@ -75,7 +78,7 @@
 }
 
 .horizontal_nav .first_pane .pane_content {
-	width:90%;
+	width:80%;
 }
 
 /* <-- Ajax Loader --> */
@@ -97,9 +100,11 @@
 
 .nav_item {
 	background:#CCC;
+	cursor:pointer;
 }
 
 .cur_nav {
+	cursor:pointer;
 	background:#777;
 	
 }

@@ -45,6 +45,8 @@
 		//Create additional HTML and apply initial CSS for main page elements
 		var frame_html = $('.window_frame').html();
 		$('.window_frame').html("<div class='pane_wrap'>"+frame_html+"</div>")
+		$('.pane_wrap').children(':first').addClass('first_pane')
+		$('.pane_wrap').children(':last').addClass('last_pane');
 		
 		if(settings.layout == 'vertical'){
 			$('.pane_wrap').addClass('vertical_nav');
@@ -72,18 +74,14 @@
 		
 		$('.pane').each(function(){
 			pane_num++;
-			$(this).addClass('pane_'+pane_num);
 		})
-		
-		$('.pane_wrap').children(':first').addClass('first_pane')
-		$('.pane_wrap').children(':last').addClass('last_pane');
 		
 		//Setup the panes
 		function position_panes(){
 			var num_panes = 0;
 			$('.pane').each(function(){
 				num_panes++;	
-				$(this).attr("data-pane", num_panes)
+				
 				//Set base css styles every pane needs
 				if(settings.layout == 'vertical'){
 					$(this).css({
@@ -116,8 +114,6 @@
 				height:pane_num*h+'px'
 			})
 		}
-		
-		//Hide all but first two panes
 		
 		//Finished setup, display wrapper and call onFinish
 		if(settings.ajax_loading == true){
@@ -217,28 +213,18 @@
 		
 		generate_nav();
 		
-		//Hide all but first two panes content. Panes will be shown or hid depending on the user navigating to and from pane. This will offer faster animation scrolling as only two panes worth of content will be animating.
-		$('.pane').each(function(){
-			if($(this).attr('data-pane')>1){
-				$(this).children().hide();	
-			}
-		})
-		
 		$('.window_frame').show();
-				
+		
 		if(typeof settings.onComplete === 'function'){
 			settings.onComplete.call(this);
 		}
 		
 		//Function handles nav item click
-		//TODO now that we hide panes to save on animation resources, lets attempt making this transition a fade effect where the pane fades out, adjusts to new positions, fades back in. We could accomplish this with a clone as well.
-		$('.nav_item').click(function(){
-			var temp_pane = cur_pane;		
+		$('.nav_item').click(function(){			
 			cur_pane = $(this).attr('data-pane');
 			if(anim_running == false || anim_running == ''){
 				if(settings.layout == 'vertical'){
 					anim_running = true;
-					$('.pane_'+cur_pane).children().show()
 					var offset = (win_h < settings.min_height) ? settings.min_height : win_h;
 					move_nav();
 					$('.pane_wrap').animate({
@@ -247,18 +233,15 @@
 						$('body').animate({
 							scrollTop:0
 						},200)
-						$('.pane_'+temp_pane).children().hide()
 						anim_running = false;
 					})
 				}else{
 					anim_running = true;
-					$('.pane_'+cur_pane).children().show()
 					var offset = (win_w < settings.min_width) ? settings.min_width : win_w;
 					move_nav();
 					$('.pane_wrap').animate({
 						left:'-'+(cur_pane - 1)*offset+'px',			
 					},settings.transition_speed, settings.easing, function(){
-						$('.pane_'+temp_pane).children().hide()
 						anim_running = false;
 					})
 				}
@@ -271,7 +254,6 @@
 				if(settings.layout == 'vertical'){
 					if(cur_pane != pane_num){
 						cur_pane++
-						$('.pane_'+cur_pane).children().show()
 						var offset = (win_h < settings.min_height) ? settings.min_height : win_h;
 						anim_running = true;
 						//Scroll the pane wrapper to the next slide
@@ -285,7 +267,6 @@
 							if(typeof onDone === 'function' && onDone()){
 								onDone();
 							}
-							$('.pane_'+(cur_pane-1)).children().hide()
 							anim_running = false;
 						})
 					}else{
@@ -296,7 +277,6 @@
 				}else if(settings.layout == 'horizontal'){
 					if(cur_pane != pane_num){
 						cur_pane++
-						$('.pane_'+cur_pane).children().show()
 						var offset = (win_w < settings.min_width) ? settings.min_width : win_w;
 						anim_running = true;
 						//Scroll the pane wrapper to the next slide
@@ -307,7 +287,6 @@
 							if(typeof onDone === 'function' && onDone()){
 								onDone();
 							}
-							$('.pane_'+(cur_pane-1)).children().hide()
 							anim_running = false;
 						})
 					}else{
@@ -324,7 +303,6 @@
 				if(settings.layout == 'vertical'){
 					if(cur_pane != 1){
 						cur_pane--
-						$('.pane_'+cur_pane).children().show()
 						var offset = (win_h < settings.min_height) ? settings.min_height : win_h;
 						anim_running = true;
 						//Scroll the pane wrapper to the prev slide
@@ -338,7 +316,6 @@
 							if(typeof onDone === 'function' && onDone()){
 								onDone();
 							}
-							$('.pane_'+(cur_pane+1)).children().hide()
 							anim_running = false;
 						})	
 					}else{
@@ -349,7 +326,6 @@
 				}else if(settings.layout == 'horizontal'){
 					if(cur_pane != 1){
 						cur_pane--
-						$('.pane_'+cur_pane).children().show()
 						var offset = (win_w < settings.min_width) ? settings.min_width : win_w;
 						anim_running = true;
 						//Scroll the pane wrapper to the prev slide
@@ -360,7 +336,6 @@
 							if(typeof onDone === 'function' && onDone()){
 								onDone();
 							}
-							$('.pane_'+(cur_pane+1)).children().hide()
 							anim_running = false;
 						})	
 					}else{
@@ -407,7 +382,7 @@
 					if(anim_running == false || anim_running == ''){
 						anim_running = true;
 						var offset = (win_h < settings.min_height) ? settings.min_height : win_h;
-						var nudge = ((cur_pane - 1)*offset)+(win_h*.3)+'px';
+						var nudge = ((cur_pane - 1)*offset)+(win_h*.4)+'px';
 						move_nav();
 						$('.pane_wrap').animate({
 							top:'-'+nudge,			
@@ -425,7 +400,7 @@
 					if(anim_running == false || anim_running == ''){
 						anim_running = true;
 						var offset = (win_w < settings.min_width) ? settings.min_width : win_w;
-						var nudge = ((cur_pane - 1)*offset)+(win_w*.3)+'px';
+						var nudge = ((cur_pane - 1)*offset)+(win_w*.4)+'px';
 						move_nav();
 						$('.pane_wrap').animate({
 							left:'-'+nudge,			
@@ -476,7 +451,7 @@
 				settings.firstPane=function(){
 					if(anim_running == false || anim_running == ''){
 						anim_running = true;
-						var nudge = (win_h*.3)+'px';
+						var nudge = (win_h*.4)+'px';
 						move_nav();
 						$('.pane_wrap').animate({
 							top:nudge,			
@@ -493,7 +468,7 @@
 				settings.firstPane=function(){
 					if(anim_running == false || anim_running == ''){
 						anim_running = true;
-						var nudge = (win_w*.3)+'px';
+						var nudge = (win_w*.4)+'px';
 						move_nav();
 						$('.pane_wrap').animate({
 							left:nudge,			
@@ -571,7 +546,7 @@
 			}
 			
 			size_nav();			
-		})
-	};		
+		})		
+	};	
 })( jQuery );
 
