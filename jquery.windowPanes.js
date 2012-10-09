@@ -5,11 +5,11 @@
 	$.fn.windowPanes = function(options) { 
 		 
 		var settings = $.extend( {
-			'transitionSpeed': 500,
+			'transitionSpeed': 1250,
 			'easing':'',
 			'layout': 'vertical',
-			'min_height': 480,
-			'min_width': 320,
+			'min_height': 0,
+			'min_width': 0,
 			'swipe': true,
 			'onComplete': function(){},
 			'onStart': function(){},
@@ -18,15 +18,20 @@
 			'ajaxLoading':true,
 			'slideSuppression':true,
 			'navSize':32,
-			'hideContent':true
+			'hideContent':true,
+			'previewDelay':500,
+			'navFade':3500,
 		}, options);
 		
 		//Set vars
-		var win_w = $('.window_frame').width();
-		var win_h = $('.window_frame').height();
-		var pane_num = 0;
-		var cur_pane = 1;
-		var anim_running = '';
+		var win_w = $('.window_frame').width()
+		var win_h = $('.window_frame').height()
+		var pane_num = 0
+		var cur_pane = 1
+		var anim_running = ''
+		var nav_click = 0;
+		var clicked_nav = ''
+		var nav_fadeTimer = ''
 		
 		//If pause_anim flag is true, activate anim_running flag by setting to false
 		if(settings.slideSuppression == true){
@@ -129,14 +134,24 @@
 		
 		//Generate navigation
 		function generate_nav(){					
-			$('.window_frame').append("<div class='window_nav'><div class='cur_nav'></div></div>");
+			$('.window_frame').append("<div class='window_nav'><div class='cur_nav'></div><div class='nav_preview' style=''></div></div>");
 			for(i=0; i<pane_num; i++){
 				var num = i+1
-				$('.window_nav').append("<div class='nav_item' id='nav_"+num+"' data-pane='"+num+"'></div>")	
+				var t = escape($("#pane_"+num).data('title'))
+				$('.window_nav').append("<div class='nav_item' id='nav_"+num+"' data-pane='"+num+"' data-title='"+t+"'></div>");	
 			}
 			
+			//Set nav_preview default styles
+			var n_w = $('.nav_preview').width()
+			var n_h = $('.nav_preview').height()
+			
+			$('.nav_preview').css({
+				position:'absolute',
+				opacity:'0'
+			})
+			
 			size_nav();		
-		}	
+		}		
 		
 		function size_nav(){
 			//Generate based on container width and number of panes
@@ -170,7 +185,10 @@
 				}).each(function(){
 					$(this).css({top:nav_push})
 					nav_push = nav_push + 2
-				})				
+				})
+				$('.nav_preview').css({
+					
+				})
 			}else if(settings.layout == 'horizontal'){
 				$('.window_nav').css({
 					height:settings.navSize,
@@ -234,37 +252,74 @@
 		//Function handles nav item click
 		//TODO now that we hide panes to save on animation resources, lets attempt making this transition a fade effect where the pane fades out, adjusts to new positions, fades back in. We could accomplish this with a clone as well.
 		$('.nav_item').click(function(){
-			var temp_pane = cur_pane;		
-			cur_pane = $(this).attr('data-pane');
-			if(anim_running == false || anim_running == ''){
-				if(settings.layout == 'vertical'){
-					anim_running = true;
-					if(settings.hideContent == true){$('.pane_'+cur_pane).children().show()}
-					var offset = (win_h < settings.min_height) ? settings.min_height : win_h;
-					move_nav();
-					$('.pane_wrap').animate({
-						top:'-'+(cur_pane - 1)*offset+'px',			
-					},settings.transitionSpeed, settings.easing, function(){
-						$('body').animate({
-							scrollTop:0
-						},200)
-						if(settings.hideContent == true){$('.pane_'+temp_pane).children().hide()}
-						anim_running = false;
-					})
-				}else{
-					anim_running = true;
-					if(settings.hideContent == true){$('.pane_'+cur_pane).children().show()}
-					var offset = (win_w < settings.min_width) ? settings.min_width : win_w;
-					move_nav();
-					$('.pane_wrap').animate({
-						left:'-'+(cur_pane - 1)*offset+'px',			
-					},settings.transitionSpeed, settings.easing, function(){
-						if(settings.hideContent == true){$('.pane_'+temp_pane).children().hide()}
-						anim_running = false;
+			if(nav_click == 0){
+				nav_click = 1;
+				clicked_nav = $(this).attr('id');
+				var position = $(this).position().top + ($(this).height() / 6);
+				var title = unescape($(this).data('title'))
+				$('.nav_preview').html(title).css({
+					top:position+'px'
+				}).animate({opacity:1},250, function(){
+					var $obj = $(this)
+					nav_fadeTimer = setTimeout(function(obj){
+						nav_click = 0;
+						$obj.animate({opacity:0}, 250)
+					},settings.navFade)
+				})
+			}else if (nav_click == 1){
+				if($(this).attr('id') == clicked_nav){
+					nav_click = 0;
+					$('.nav_preview').animate({opacity:0},250)
+					var temp_pane = cur_pane;		
+					cur_pane = $(this).attr('data-pane');
+					if(anim_running == false || anim_running == ''){
+						if(settings.layout == 'vertical'){
+							anim_running = true;
+							if(settings.hideContent == true){$('.pane_'+cur_pane).children().show()}
+							var offset = (win_h < settings.min_height) ? settings.min_height : win_h;
+							move_nav();
+							$('.pane_wrap').animate({
+								top:'-'+(cur_pane - 1)*offset+'px',			
+							},settings.transitionSpeed, settings.easing, function(){
+								$('body').animate({
+									scrollTop:0
+								},200)
+								if(settings.hideContent == true){$('.pane_'+temp_pane).children().hide()}
+								anim_running = false;
+							})
+						}else{
+							anim_running = true;
+							if(settings.hideContent == true){$('.pane_'+cur_pane).children().show()}
+							var offset = (win_w < settings.min_width) ? settings.min_width : win_w;
+							move_nav();
+							$('.pane_wrap').animate({
+								left:'-'+(cur_pane - 1)*offset+'px',			
+							},settings.transitionSpeed, settings.easing, function(){
+								if(settings.hideContent == true){$('.pane_'+temp_pane).children().hide()}
+								anim_running = false;
+							})
+						}
+					}
+				}else{					
+					clearTimeout(nav_fadeTimer);
+					nav_click = 1;
+					clicked_nav = $(this).attr('id');
+					var position = $(this).position().top + ($(this).height() / 6);
+					var title = unescape($(this).data('title'))
+					$('.nav_preview').animate({opacity:0}, 250, function(){
+						$(this).html(title).css({
+							top:position+'px'
+						}).animate({opacity:1},250, function(){
+							var $obj = $(this)
+							nav_fadeTimer = setTimeout(function(obj){
+								nav_click = 0;
+								$obj.animate({opacity:0}, 250)
+							},settings.navFade)
+						})
 					})
 				}
 			}
-		});
+		});		
 						
 		//Functions handle next/prev behavior
 		function next_pane(onDone){
@@ -544,15 +599,22 @@
 		
 		//This function simply updates our win height/width vars on a resize
 		$(window).resize(function(){
-			win_w = $(window).width();
-			win_h = $(window).height();
+			win_w = $('.window_frame').width();
+			win_h = $('.window_frame').height();
 			
-			$('html, body, .window_frame').css({
-				height: (win_h < settings.min_height) ? settings.min_height+'px' : win_h+'px',
-				width: (win_w < settings.min_width) ? settings.min_width+'px' : win_w+'px',
+			$('.pane').each(function(){
+				if(settings.layout == 'vertical'){
+					$(this).css({
+						width:(win_w < settings.min_width) ? settings.min_width+'px' : win_w+'px',
+						height:(win_h < settings.min_height) ? settings.min_height+'px' : win_h+'px',
+					});
+				}else if(settings.layout == 'horizontal'){
+					$(this).css({
+						width:(win_w < settings.min_width) ? settings.min_width+'px' : win_w+'px',
+						height:(win_h < settings.min_height) ? settings.min_height+'px' : win_h+'px',
+					});
+				}
 			});
-			
-			position_panes()
 			
 			//Also need to update our pane_wraps position offset
 			if(settings.layout == 'vertical'){
@@ -571,7 +633,10 @@
 				})
 			}
 			
-			size_nav();			
+			size_nav();
+			//Readjust navs current slide position
+			var position = $('#nav_'+cur_pane).position()
+			$('.cur_nav').css({top:position.top+'px'})
 		})
 	};		
 })( jQuery );
