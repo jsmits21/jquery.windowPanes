@@ -81,6 +81,7 @@
 	width:80%;
 }
 
+
 /* <-- Ajax Loader --> */
 
 .pane_loader {
@@ -108,3 +109,38 @@
 	background:#777;
 	
 }
+
+.nav_preview {
+	width:192px;
+	left:-212px;
+	min-height:64px;
+	background-color:rgba(0,0,0,0.5);
+	font:normal 16px Verdana, Geneva, sans-serif;
+}
+
+.nav_preview:before {
+	content:'';
+	display:block;
+	position:absolute;
+	right:-12px;
+	top:25%;
+	width: 0; 
+	height: 0; 
+	border-top: 12px solid transparent;
+	border-bottom: 12px solid transparent;
+	border-left: 12px solid rgba(0,0,0,0.5);
+}
+
+.nav_preview h1 {
+	padding:8px;
+	margin:0;
+	font-size:18px;	
+}
+
+.nav_preview p {
+	padding:0 8px 8px;
+	margin:0;
+	overflow:hidden;
+}
+
+
